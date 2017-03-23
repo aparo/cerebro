@@ -24,4 +24,26 @@ lazy val root = (project in file(".")).
 
 doc in Compile <<= target.map(_ / "none")
 
+enablePlugins(JavaServerAppPackaging)
+enablePlugins(SystemdPlugin)
+
 pipelineStages := Seq(digest, gzip)
+
+serverLoading := Some(ServerLoader.Systemd)
+systemdSuccessExitStatus in Debian += "143"
+systemdSuccessExitStatus in Rpm += "143"
+linuxPackageMappings += packageTemplateMapping(s"/var/lib/${packageName.value}")() withUser((daemonUser in Linux).value) withGroup((daemonGroup in Linux).value)
+
+rpmVendor:= "cerebro"
+
+packageName in Linux := s"cerebro"
+maintainer in Linux := "Alberto Paro <alberto.paro@gmail.com>"
+packageSummary in Linux := "Cerebro Server"
+packageDescription in Linux := "Cerebro Server"
+bashScriptConfigLocation := Some(s"/etc/cerebro/jvmopts")
+bashScriptExtraDefines += s"""addJava "-Dconfig.file=/etc/cerebro/application.conf" """
+bashScriptExtraDefines += s"""addJava "-Dlogback.configurationFile=/etc/cerebro/logback.xml" """
+rpmGroup := Some("Servers/Microservices")
+//rpmDescription := "Cerebro Server"
+rpmUrl := Some(s"https://github.com/lmenezes/cerebro")
+rpmLicense := Some("Apache")
