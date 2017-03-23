@@ -5,8 +5,8 @@ version := "0.6.3"
 scalaVersion := "2.11.8"
 
 libraryDependencies ++= Seq(
-  "com.typesafe.play" %% "play"                    % "2.5.10",
-  "com.typesafe.play" %% "play-ws"                 % "2.5.10",
+  "com.typesafe.play" %% "play"                    % "2.5.13",
+  "com.typesafe.play" %% "play-ws"                 % "2.5.13",
   "com.typesafe.play" %% "play-slick"              % "2.0.2",
   "com.typesafe.play" %% "play-slick-evolutions"   % "2.0.2",
   "org.xerial"        %  "sqlite-jdbc"             % "3.16.1",
