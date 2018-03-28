@@ -9,6 +9,8 @@ angular.module('cerebro').factory('DataService', ['$rootScope', '$timeout',
 
     var password;
 
+    var onGoingRequests = {};
+
     this.getHost = function() {
       return host;
     };
@@ -19,6 +21,14 @@ angular.module('cerebro').factory('DataService', ['$rootScope', '$timeout',
       password = newPassword;
       $location.search('host', newHost);
       RefreshService.refresh();
+    };
+
+    this.disconnect = function() {
+      host = undefined;
+      username = undefined;
+      password = undefined;
+      onGoingRequests = {};
+      $location.path('/connect');
     };
 
     if ($location.search().host) {
@@ -50,31 +60,7 @@ angular.module('cerebro').factory('DataService', ['$rootScope', '$timeout',
       clusterRequest('commons/nodes', {}, success, error);
     };
 
-    // ---------- Analysis ----------
-    this.getOpenIndices = function(success, error) {
-      clusterRequest('analysis/indices', {}, success, error);
-    };
-
-    this.getIndexAnalyzers = function(index, success, error) {
-      clusterRequest('analysis/analyzers', {index: index}, success, error);
-    };
-
-    this.getIndexFields = function(index, success, error) {
-      clusterRequest('analysis/fields', {index: index}, success, error);
-    };
-
-    this.analyzeByField = function(index, field, text, success, error) {
-      var data = {index: index, field: field, text: text};
-      clusterRequest('analysis/analyze/field', data, success, error);
-    };
-
-    this.analyzeByAnalyzer = function(index, analyzer, text, success, error) {
-      var data = {index: index, analyzer: analyzer, text: text};
-      clusterRequest('analysis/analyze/analyzer', data, success, error);
-    };
-
     // ---------- Aliases ----------
-
     this.getAliases = function(success, error) {
       clusterRequest('aliases/get_aliases', {}, success, error);
     };
@@ -87,15 +73,6 @@ angular.module('cerebro').factory('DataService', ['$rootScope', '$timeout',
     // ---------- Cluster State Changes ----------
     this.clusterChanges = function(success, error) {
       clusterRequest('cluster_changes', {}, success, error);
-    };
-
-    // ---------- Connect ----------
-    this.getHosts = function(success, error) {
-      var config = {
-        method: 'GET',
-        url: 'connect/hosts'
-      };
-      request(config, success, error);
     };
 
     // ---------- External API ----------
@@ -124,20 +101,33 @@ angular.module('cerebro').factory('DataService', ['$rootScope', '$timeout',
 
     var request = function(config, success, error) {
       var handleSuccess = function(data) {
-        if (data.status === 303) {
-          $window.location.href = 'login';
-        } else {
-          if (data.status >= 200 && data.status < 300) {
-            success(data.body);
-          } else {
-            error(data.body);
-          }
+        onGoingRequests[config.url] = undefined;
+        switch (data.status) {
+          case 303: // unauthorized in cerebro
+            $window.location.href = './login';
+            break;
+          case 401: // unauthorized in ES instance
+            $location.path('/connect').search({host: host, unauthorized: true});
+            break;
+          default:
+            if (data.status >= 200 && data.status < 300) {
+              success(data.body);
+            } else {
+              error(data.body);
+            }
         }
       };
       var handleError = function(data) {
+        onGoingRequests[config.url] = undefined;
         AlertService.error('Error connecting to the server', data.error);
       };
-      $http(config).success(handleSuccess).error(handleError);
+      var activeRequest = onGoingRequests[config.url] !== undefined;
+      var now = new Date().getTime();
+      var interval = RefreshService.getInterval();
+      if (!activeRequest || now - onGoingRequests[config.url] < interval) {
+        $http(config).success(handleSuccess).error(handleError);
+        onGoingRequests[config.url] = new Date().getTime();
+      }
     };
 
     return this;

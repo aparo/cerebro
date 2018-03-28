@@ -1,4 +1,4 @@
-<nav class="navbar navbar-default navbar-fixed-top navbar-{{status}}" ng-controller="NavbarController">
+<nav class="navbar navbar-default navbar-fixed-top navbar-{{status}}" ng-controller="NavbarController" ng-show="host">
   <div class="container-fluid">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -63,16 +63,30 @@
         </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
+        <li>
+          <a target="_self" href="#" data-toggle="dropdown" class="dropdown-toggle">
+            <i class="fa fa-fw fa-refresh"></i> {{refreshInterval | timeInterval}} <i class="fa fa-fw fa-caret-down"></i>
+          </a>
+          <ul class="dropdown-menu" style="min-width: 60px;">
+            <li ng-repeat="i in [5000, 10000, 15000, 30000, 60000] track by $index">
+              <a class="nav-item nav-link" ng-click="setRefreshInterval(i)">
+                {{i | timeInterval}}
+              </a>
+            </li>
+          </ul>
+        </li>
         <li class="hidden-xs">
           <a class="nav-item nav-link">
             <span ng-show="host">{{host}}</span>
           </a>
         </li>
         <li>
-          <a href="#connect" class="nav-item nav-link hidden-xs"><i class="fa fa-plug"></i></a>
+          <a href="#connect" class="nav-item nav-link hidden-xs" ng-click="disconnect()">
+            <i class="fa fa-plug"></i>
+          </a>
         </li>
         <li>
-          <form action="/auth/logout" method="POST" ng-show="username">
+          <form action="auth/logout" method="POST" ng-show="username">
             <button class="btn btn-lg btn-link" type="submit">
               <i class="fa fa-power-off"></i>
             </button>

@@ -15,8 +15,12 @@
         <i class="fa fa-hdd-o"></i> data
       </label>
       <label class="checkbox-inline">
-        <input type="checkbox" ng-model="filter.client">
-        <i class="fa fa-search"></i> client
+        <input type="checkbox" ng-model="filter.ingest">
+        <i class="fa fa-crop"></i> ingest
+      </label>
+      <label class="checkbox-inline">
+        <input type="checkbox" ng-model="filter.coordinating">
+        <i class="fa fa-crosshairs"></i> coordinating
       </label>
     </div>
   </div>
@@ -58,8 +62,8 @@
             <div ng-show="node.data">
               <i class="fa fa-fw fa-hdd-o" title="data node"></i>
             </div>
-            <div ng-show="node.client">
-              <i class="fa fa-fw fa-search" title="client node"></i>
+            <div ng-show="node.coordinating">
+              <i class="fa fa-fw fa-crosshairs" title="coordinating node"></i>
             </div>
             <div ng-show="node.ingest">
               <i class="fa fa-fw fa-crop" title="ingest node"></i>
@@ -78,7 +82,7 @@
         </div>
       </div>
       <div class="node-labels">
-        <span class="label label-details">JVM: {{node.jvm}}</span>
+        <span class="label label-details" ng-show="node.jvm">JVM: {{node.jvm}}</span>
         <span class="label label-details">ES: {{node.version}}</span>
       </div>
     </td>
@@ -105,14 +109,14 @@
       </div>
     </td>
     <td>
-      <div ng-show="node.disk.percent">
+      <div ng-show="node.disk">
         <span class="main-stat">{{node.disk.percent}}%</span>
         <span class="detail-stat">
           <div>available: {{node.disk.available | bytes}}</div>
           <div>total: {{node.disk.total | bytes}}</div>
         </span>
       </div>
-      <div class="empty-stat" ng-hide="node.disk.percent">
+      <div class="empty-stat" ng-hide="node.disk">
         -
       </div>
     </td>

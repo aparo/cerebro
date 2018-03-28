@@ -15,8 +15,8 @@ angular.module('cerebro').controller('OverviewController', ['$scope', '$http',
     $scope.special_indices = 0;
     $scope.shardAllocation = true;
 
-    $scope.indices_filter = new IndexFilter('', true, false, true, true, 0);
-    $scope.nodes_filter = new NodeFilter('', true, false, false, 0);
+    $scope.indices_filter = new IndexFilter('', false, false, true, true, 0);
+    $scope.nodes_filter = new NodeFilter('', true, false, false, false, 0);
 
     $scope.getPageSize = function() {
       return Math.max(Math.round($window.innerWidth / 280), 1);
@@ -59,6 +59,11 @@ angular.module('cerebro').controller('OverviewController', ['$scope', '$http',
           $scope.closed_indices = data.closed_indices;
           $scope.special_indices = data.special_indices;
           $scope.shardAllocation = data.shard_allocation;
+          if (!$scope.unassigned_shards &&
+            !$scope.relocating_shards &&
+            !$scope.initializing_shards) {
+            $scope.indices_filter.healthy = true;
+          }
         },
         function(error) {
           AlertService.error('Error while loading data', error);
@@ -157,6 +162,15 @@ angular.module('cerebro').controller('OverviewController', ['$scope', '$http',
       );
     };
 
+    $scope.flushIndex = function(index) {
+      ModalService.promptConfirmation(
+        'Flush index ' + index + '?',
+        function() {
+          OverviewDataService.flushIndex(index, success, error);
+        }
+      );
+    };
+
     $scope.forceMerge = function(index) {
       ModalService.promptConfirmation(
         'Optimize index ' + index + '?',
@@ -212,6 +226,18 @@ angular.module('cerebro').controller('OverviewController', ['$scope', '$http',
         'Refresh all ' + indices.length + ' selected indices?',
         function() {
           OverviewDataService.refreshIndex(indices.join(','), success, error);
+        }
+      );
+    };
+
+    $scope.flushIndices = function() {
+      var indices = $scope.paginator.getResults().map(function(index) {
+        return index.name;
+      });
+      ModalService.promptConfirmation(
+        'Flush all ' + indices.length + ' selected indices?',
+        function() {
+          OverviewDataService.flushIndex(indices.join(','), success, error);
         }
       );
     };

@@ -6,18 +6,18 @@ import play.api.libs.json._
 object Node {
 
   def apply(id: String, info: JsValue, stats: JsValue, masterNodeId: String) = {
-    val nodeRoles = NodeRoles(info)
+    val nodeRoles = NodeRoles(stats)
 
 
     // AWS nodes return no host/ip info
-    val host = (info \ "host").asOpt[JsString].getOrElse(JsNull)
-    val ip = (info \ "ip").asOpt[JsString].getOrElse(JsNull)
+    val host = (stats \ "host").asOpt[JsString].getOrElse(JsNull)
+    val ip = (stats \ "ip").asOpt[JsString].getOrElse(JsNull)
     val jvmVersion = (info \ "jvm" \ "version").asOpt[JsString].getOrElse(JsNull)
 
     Json.obj(
       "id" -> JsString(id),
       "current_master" -> JsBoolean(id.equals(masterNodeId)),
-      "name" -> (info \ "name").as[JsString],
+      "name" -> (stats \ "name").as[JsString],
       "host" -> host,
       "ip" -> ip,
       "es_version" -> (info \ "version").as[JsString],
@@ -27,7 +27,7 @@ object Node {
       "cpu_percent" -> cpuPercent(stats),
       "master" -> JsBoolean(nodeRoles.master),
       "data" -> JsBoolean(nodeRoles.data),
-      "client" -> JsBoolean(nodeRoles.client),
+      "coordinating" -> JsBoolean(nodeRoles.coordinating),
       "ingest" -> JsBoolean(nodeRoles.ingest),
       "heap" -> Json.obj(
         "used" -> (stats \ "jvm" \ "mem" \ "heap_used_in_bytes").as[JsNumber],

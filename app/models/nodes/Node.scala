@@ -5,7 +5,9 @@ import play.api.libs.json._
 
 object Node {
 
-  def apply(id: String, currentMaster: Boolean, info: JsValue, stats: JsValue): JsValue =
+  def apply(id: String, currentMaster: Boolean, info: JsValue, stats: JsValue): JsValue = {
+    val jvmVersion = (info \ "jvm" \ "version").asOpt[JsString].getOrElse(JsNull)
+
     Json.obj(
       "id" -> JsString(id),
       "current_master" -> JsBoolean(currentMaster),
@@ -14,15 +16,16 @@ object Node {
       "disk" -> disk(stats),
       "cpu" -> cpu(stats),
       "uptime" -> (stats \ "jvm" \ "uptime_in_millis").as[JsValue],
-      "jvm" -> (info \ "jvm" \ "version").as[JsValue],
+      "jvm" -> jvmVersion,
       "version" -> (info \ "version").as[JsValue]
     ) ++ roles(info)
+  }
 
   private def roles(info: JsValue): JsObject = {
     val roles = NodeRoles(info)
     Json.obj(
       "master" -> JsBoolean(roles.master),
-      "client" -> JsBoolean(roles.client),
+      "coordinating" -> JsBoolean(roles.coordinating),
       "ingest" -> JsBoolean(roles.ingest),
       "data" -> JsBoolean(roles.data)
     )
@@ -53,12 +56,7 @@ object Node {
           "available" -> JsNumber(a),
           "percent" -> JsNumber(percent)
         )
-      case _ =>
-        Json.obj(
-          "total" -> JsNull,
-          "available" -> JsNull,
-          "percent" -> JsNull
-        )
+      case _ => JsNull
     }
   }
 

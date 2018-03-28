@@ -127,3 +127,95 @@ First cerebro release.
 #### Enhancements
 - display all index aliases on overview
 - improved error messages
+
+###v0.6.4 - March 30th, 2017
+
+#### Bug fixes
+- use relative path for authentication action
+
+#### Enhancements
+- support indices with special characters (for ES < 2.X))
+
+###v0.6.5 - April 6th, 2017
+
+#### Bug fixes
+- logout action to use relative path
+- correctly handle an empty cat api response
+- consider both string and text types on field analysis
+
+#### Enhancements
+- updated known node types(included ingest, renamed client to coordinating)
+- support changing refresh interval
+
+###v0.6.6 - July 26th, 2017
+
+#### Bug fixes
+- support non valid json requests through rest client
+- consistent icon for coordinating nodes
+
+#### Enhancements
+- remove trailing / from ES hosts
+- fix nodes tab to handle aws nodes
+- order indices alphabetically on aliases page
+- ensure unassigned shards ordering
+- max width to alerts
+- display single alias on overview
+- improve performance of overview index filtering
+
+###v0.6.7 - September 23rd, 2017
+
+#### Bug fixes
+- use correct host when copying rest request for curl
+- fixed restore snapshot with multiple selected indices
+
+#### Enhancements
+- send content-type to ES
+- hide closed indices by default on cluster overview
+- display both source and target for relocating shards
+- confirmation dialogs displayed over alert notifications
+
+#### New features
+- support flush index from cluster overview
+
+###v0.6.8 - September 30th, 2017
+
+#### Bug fixes
+- fixed heading text on cat apis page
+- fixed ordering for a few select components
+- correctly display 0% disk usage
+- fixed rendering of escaped content in rest client
+
+#### Enhancements
+- add missing settings for s3 repositories
+- display alias filter/routing on aliases listing
+- support linux aarch64 (https://github.com/lmenezes/cerebro/issues/207)
+
+###v0.7.0 - October 13th, 2017
+
+#### Bug fixes
+- fixed rest url autocompletion
+- fixed snapshot creation with selected list of indices
+- fixes 'show onlly affected indices' filter
+
+#### Enhancements
+- overview section optimised for big clusters
+- cluster changes alerts optimised for big clusters
+- gzip enabled for all api calls
+- avoid piling up of slow requests
+
+###v0.7.1 - October 17th, 2017
+
+#### Bug fixes
+- fixes mass actions on selected indices
+- fixes error connecting to cluster with more docs than Integer.MAX_VALUE
+
+#### Enhancements
+- enabled gzip when requesting data from ES
+- optimised ES response parsing
+- dropped internal usage of _cat apis in favor of faster alternatives
+
+###v0.7.2 - November 28th, 2017
+
+#### Bug fixes
+- fixes unhealty indices filter
+- analyse module to work with ES 6.X

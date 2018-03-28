@@ -5,14 +5,20 @@ import javax.inject.{Inject, Singleton}
 import akka.actor.ActorSystem
 import controllers.auth.{AuthAction, AuthenticationModule}
 import forms.LoginForm
-import play.api.mvc.{Action, Controller}
+import play.api.Configuration
+import play.api.mvc.InjectedController
+
 
 @Singleton
-class AuthController @Inject()(system: ActorSystem, authentication: AuthenticationModule) extends Controller {
+class AuthController @Inject()(system: ActorSystem,
+                               authentication: AuthenticationModule,
+                               configuration: Configuration)
+  extends InjectedController {
 
   import AuthController._
 
   private val badFormMsg = "invalid login form data"
+
 
   def index = Action { implicit request =>
     if (authentication.isEnabled) {
@@ -47,15 +53,15 @@ class AuthController @Inject()(system: ActorSystem, authentication: Authenticati
               }
             resp.withSession(AuthAction.SESSION_USER -> username)
           case None =>
-            Redirect(routes.AuthController.index).flashing(LOGIN_MSG -> "wrong user and/or password")
+            Redirect(routes.AuthController.index).flashing(LOGIN_MSG -> "Incorrect username or password")
         }
       }
     )
   }
 
-  def logout = Action {
-    request =>
-      Redirect("/login").withNewSession
+  def logout = Action { _ =>
+    val prefix = configuration.getOptional[String]("play.http.context").getOrElse("/")
+    Redirect(s"${prefix}login").withNewSession
   }
 
 }

@@ -4,7 +4,7 @@ import play.api.libs.json.Json
 
 object ClusterInitializingShards {
 
-  def apply() = ClusterOverview(clusterState, nodesStats, indicesStats, clusterSettings, aliases, clusterHealth, nodes, main)
+  def apply() = ClusterOverview(clusterState, nodesStats, indicesStats, clusterSettings, aliases, clusterHealth, nodes)
 
   val clusterState = Json.parse(
     """
@@ -150,140 +150,6 @@ object ClusterInitializingShards {
       |          } ]
       |        }
       |      }
-      |    }
-      |  },
-      |  "routing_nodes" : {
-      |    "unassigned" : [ {
-      |      "state" : "UNASSIGNED",
-      |      "primary" : false,
-      |      "node" : null,
-      |      "relocating_node" : null,
-      |      "shard" : 4,
-      |      "index" : "hello",
-      |      "version" : 10,
-      |      "unassigned_info" : {
-      |        "reason" : "REPLICA_ADDED",
-      |        "at" : "2016-03-19T14:13:39.833Z"
-      |      }
-      |    } ],
-      |    "nodes" : {
-      |      "VOiMU2k5SuStH3-X1uuBGw" : [ {
-      |        "state" : "INITIALIZING",
-      |        "primary" : false,
-      |        "node" : "VOiMU2k5SuStH3-X1uuBGw",
-      |        "relocating_node" : null,
-      |        "shard" : 1,
-      |        "index" : "hello",
-      |        "version" : 16,
-      |        "allocation_id" : {
-      |          "id" : "rNdtAPz_RhKVBp6dpAH1cw"
-      |        },
-      |        "unassigned_info" : {
-      |          "reason" : "REPLICA_ADDED",
-      |          "at" : "2016-03-19T14:13:39.833Z"
-      |        }
-      |      }, {
-      |        "state" : "STARTED",
-      |        "primary" : true,
-      |        "node" : "VOiMU2k5SuStH3-X1uuBGw",
-      |        "relocating_node" : null,
-      |        "shard" : 2,
-      |        "index" : "hello",
-      |        "version" : 15,
-      |        "allocation_id" : {
-      |          "id" : "rN62kibSRZq0RxcwxEHKKw"
-      |        }
-      |      }, {
-      |        "state" : "INITIALIZING",
-      |        "primary" : false,
-      |        "node" : "VOiMU2k5SuStH3-X1uuBGw",
-      |        "relocating_node" : null,
-      |        "shard" : 3,
-      |        "index" : "hello",
-      |        "version" : 11,
-      |        "allocation_id" : {
-      |          "id" : "NhG91IW6RCW1KAbSx67O9g"
-      |        },
-      |        "unassigned_info" : {
-      |          "reason" : "REPLICA_ADDED",
-      |          "at" : "2016-03-19T14:13:39.833Z"
-      |        }
-      |      }, {
-      |        "state" : "STARTED",
-      |        "primary" : true,
-      |        "node" : "VOiMU2k5SuStH3-X1uuBGw",
-      |        "relocating_node" : null,
-      |        "shard" : 0,
-      |        "index" : "hello",
-      |        "version" : 17,
-      |        "allocation_id" : {
-      |          "id" : "13mrI6FhRjGEk7xG7xYJvg"
-      |        }
-      |      } ],
-      |      "cPsT9o5FQ3WRnvqSTXHiVQ" : [ {
-      |        "state" : "STARTED",
-      |        "primary" : true,
-      |        "node" : "cPsT9o5FQ3WRnvqSTXHiVQ",
-      |        "relocating_node" : null,
-      |        "shard" : 1,
-      |        "index" : "hello",
-      |        "version" : 16,
-      |        "allocation_id" : {
-      |          "id" : "hlwc94lZRvOoBoaxyEWIGg"
-      |        }
-      |      }, {
-      |        "state" : "STARTED",
-      |        "primary" : true,
-      |        "node" : "cPsT9o5FQ3WRnvqSTXHiVQ",
-      |        "relocating_node" : null,
-      |        "shard" : 4,
-      |        "index" : "hello",
-      |        "version" : 10,
-      |        "allocation_id" : {
-      |          "id" : "Kyne0gDVQEasq9VxUUsxbg"
-      |        }
-      |      }, {
-      |        "state" : "INITIALIZING",
-      |        "primary" : false,
-      |        "node" : "cPsT9o5FQ3WRnvqSTXHiVQ",
-      |        "relocating_node" : null,
-      |        "shard" : 2,
-      |        "index" : "hello",
-      |        "version" : 15,
-      |        "allocation_id" : {
-      |          "id" : "2G3Hs3CnT5uvhpeOmHZyYg"
-      |        },
-      |        "unassigned_info" : {
-      |          "reason" : "REPLICA_ADDED",
-      |          "at" : "2016-03-19T14:13:39.833Z"
-      |        }
-      |      }, {
-      |        "state" : "STARTED",
-      |        "primary" : true,
-      |        "node" : "cPsT9o5FQ3WRnvqSTXHiVQ",
-      |        "relocating_node" : null,
-      |        "shard" : 3,
-      |        "index" : "hello",
-      |        "version" : 11,
-      |        "allocation_id" : {
-      |          "id" : "b4Gdtk7uTuSINaZ_YdaJdg"
-      |        }
-      |      }, {
-      |        "state" : "INITIALIZING",
-      |        "primary" : false,
-      |        "node" : "cPsT9o5FQ3WRnvqSTXHiVQ",
-      |        "relocating_node" : null,
-      |        "shard" : 0,
-      |        "index" : "hello",
-      |        "version" : 17,
-      |        "allocation_id" : {
-      |          "id" : "FbfzrPiySEaOzGMRZRDf7w"
-      |        },
-      |        "unassigned_info" : {
-      |          "reason" : "REPLICA_ADDED",
-      |          "at" : "2016-03-19T14:13:39.833Z"
-      |        }
-      |      } ]
       |    }
       |  }
       |}
@@ -697,23 +563,6 @@ object ClusterInitializingShards {
       |      }
       |    }
       |  }
-      |}
-    """.stripMargin
-  )
-
-  val main = Json.parse(
-    """
-      |{
-      |  "name" : "Cecilia Reyes",
-      |  "cluster_name" : "elasticsearch",
-      |  "version" : {
-      |    "number" : "2.1.0",
-      |    "build_hash" : "72cd1f1a3eee09505e036106146dc1949dc5dc87",
-      |    "build_timestamp" : "2015-11-18T22:40:03Z",
-      |    "build_snapshot" : false,
-      |    "lucene_version" : "5.3.1"
-      |  },
-      |  "tagline" : "You Know, for Search"
       |}
     """.stripMargin
   )

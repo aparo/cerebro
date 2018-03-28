@@ -1,19 +1,25 @@
 name := "cerebro"
 
-version := "0.6.3"
+maintainer := "Leonardo Menezes <leonardo.menezes@xing.com>"
 
-scalaVersion := "2.11.8"
+version := "0.7.2"
+
+scalaVersion := "2.11.11"
 
 libraryDependencies ++= Seq(
-  "com.typesafe.play" %% "play"                    % "2.5.13",
-  "com.typesafe.play" %% "play-ws"                 % "2.5.13",
-  "com.typesafe.play" %% "play-slick"              % "2.0.2",
-  "com.typesafe.play" %% "play-slick-evolutions"   % "2.0.2",
-  "org.xerial"        %  "sqlite-jdbc"             % "3.16.1",
+  "com.typesafe.play" %% "play"                    % "2.6.7",
+  "com.typesafe.play" %% "play-json"               % "2.6.7",
+  "com.typesafe.play" %% "play-slick"              % "3.0.1",
+  "com.typesafe.play" %% "play-slick-evolutions"   % "3.0.1",
+  "org.xerial"        %  "sqlite-jdbc"             % "3.20.0",
   "org.specs2"        %% "specs2-junit"  % "3.8.4" % "test",
   "org.specs2"        %% "specs2-core"   % "3.8.4" % "test",
   "org.specs2"        %% "specs2-mock"   % "3.8.4" % "test"
 )
+
+libraryDependencies += filters
+libraryDependencies += ws
+libraryDependencies += guice
 
 lazy val root = (project in file(".")).
   enablePlugins(PlayScala, BuildInfoPlugin, LauncherJarPlugin).

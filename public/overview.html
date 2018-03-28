@@ -5,6 +5,7 @@
       <div class="row">
         <div class="col-lg-6 col-sm-6 form-group">
           <input type="text" ng-model="paginator.filter.name" class="form-control form-control-sm"
+                 ng-model-options='{ debounce: 250 }'
                  placeholder="filter indices by name or aliases">
         </div>
         <div class="col-lg-3 col-sm-3 col-xs-6 form-group">
@@ -42,16 +43,16 @@
       <td>
         <div class="row">
           <div class="col-lg-3 col-md-6">
-            <i class="fa fa-lock fa-2x table-control red normal-action" ng-click="enableShardAllocation()"
+            <i class="fa fa-lock fa-2x table-control red normal-action" title="enable shard allocation" ng-click="enableShardAllocation()"
                ng-hide="shardAllocation"></i>
-            <i class="fa fa-unlock fa-2x table-control normal-action" ng-click="disableShardAllocation()"
+            <i class="fa fa-unlock fa-2x table-control normal-action" title="disable shard allocation" ng-click="disableShardAllocation()"
                ng-show="shardAllocation"></i>
           </div>
           <div class="col-lg-3 col-md-6">
             <i class="fa fa-expand fa-2x normal-action table-control" ng-hide="expandedView"
-               ng-click="expandedView = true"></i>
+               title="expand view" ng-click="expandedView = true"></i>
             <i class="fa fa-compress fa-2x normal-action table-control" ng-show="expandedView"
-               ng-click="expandedView = false"></i>
+               title="condense view" ng-click="expandedView = false"></i>
           </div>
           <div class="col-lg-3 col-md-6">
             <i class="fa fa-sort-alpha-asc fa-2x normal-action table-control" title="sort ascending"
@@ -62,7 +63,7 @@
           <div class="col-lg-3 col-md-6">
             <div class="dropdown">
               <span class="title normal-action" type="button" id="dropcluster" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
+                    aria-haspopup="true" aria-expanded="false" title="more options">
                 <i class="fa fa-caret-down fa-2x table-control"></i>
               </span>
               <ul class="dropdown-menu" aria-labelledby="dropcluster">
@@ -77,6 +78,9 @@
                 </li>
                 <li ng-click="refreshIndices()" data-toggle="modal" href="#confirm_dialog" target="_self">
                   <a target="_self"><i class="fa fa-fw fa-refresh"> </i> refresh selected</a>
+                </li>
+                <li ng-click="flushIndices()" data-toggle="modal" href="#confirm_dialog" target="_self">
+                  <a target="_self"><i class="fa fa-fw fa-gavel"> </i> flush selected</a>
                 </li>
                 <li ng-click="clearIndicesCache()" data-toggle="modal" href="#confirm_dialog" target="_self">
                   <a target="_self"><i class="fa fa-fw fa-circle-o"> </i> clear selected caches</a>
@@ -122,6 +126,9 @@
               <li ng-click="refreshIndex(index.name)" data-toggle="modal" href="#confirm_dialog" target="_self">
                 <a target="_self"><i class="fa fa-fw fa-refresh"> </i> refresh index</a>
               </li>
+              <li ng-click="flushIndex(index.name)" data-toggle="modal" href="#confirm_dialog" target="_self">
+                <a target="_self"><i class="fa fa-fw fa-gavel"> </i> flush index</a>
+              </li>
               <li ng-click="clearIndexCache(index.name)" data-toggle="modal" href="#confirm_dialog" target="_self">
                 <a target="_self"><i class="fa fa-fw fa-circle-o"> </i> clear cache</a>
               </li>
@@ -134,9 +141,10 @@
               </li>
             </ul>
           </div>
-          <div class="subtitle">
-            <div class="title" ng-repeat="alias in index.aliases | orderBy track by $index">
-              <i class="fa fa-tag"></i> {{alias}}
+          <div class="subtitle" ng-show="index.aliases.length">
+            <div class="title">
+              <i class="fa fa-tag"></i> {{index.aliases[0]}}
+              <span ng-show="index.aliases.length > 1">(+{{index.aliases.length - 1}})</span>
             </div>
           </div>
           <div class="detail">
@@ -171,7 +179,7 @@
         </div>
       </td>
       <td ng-repeat="index in page.elements track by $index">
-        <span ng-repeat="shard in index.shards.unassigned track by $index">
+        <span ng-repeat="shard in index.shards.unassigned | orderBy:'shard' track by $index">
           <span class="shard shard-unassigned">
             <small>{{shard.shard}}</small>
           </span>
@@ -189,6 +197,9 @@
               </div>
               <div ng-show="node.data">
                 <i class="fa fa-fw fa-hdd-o" title="data node"></i>
+              </div>
+              <div ng-show="node.ingest">
+                <i class="fa fa-fw fa-crop" title="ingest node"></i>
               </div>
             </div>
             <div class="node-info">
